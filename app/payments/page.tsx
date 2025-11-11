@@ -15,7 +15,7 @@ interface Payment {
   doctor_specialty: string;
   amount_usd: number;
   stripe_payment_intent_id: string;
-  sui_transaction_hash: string | null;
+  sui_transaction_digest: string | null;
   status: string;
   created_at: string;
 }
@@ -53,7 +53,7 @@ export default function PaymentHistoryPage() {
             doctor_specialty: apt.doctor?.specialty || 'General',
             amount_usd: apt.price_usd,
             stripe_payment_intent_id: apt.stripe_payment_intent_id,
-            sui_transaction_hash: apt.sui_transaction_hash,
+            sui_transaction_digest: apt.sui_transaction_digest,
             status: apt.status,
             created_at: apt.created_at,
           }));
@@ -208,20 +208,31 @@ export default function PaymentHistoryPage() {
                       </div>
                     </div>
 
-                    {payment.sui_transaction_hash && (
+                    {payment.sui_transaction_digest && (
                       <div className="flex items-start gap-2 pt-2 border-t border-gray-200">
-                        <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-purple-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-gray-600 mb-1">Blockchain Transaction</p>
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-xs font-medium text-gray-600">Blockchain Verified</p>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                              Immutable
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-900 font-mono break-all mb-2">
+                            {payment.sui_transaction_digest}
+                          </p>
                           <a
-                            href={`https://suiexplorer.com/txblock/${payment.sui_transaction_hash}?network=testnet`}
+                            href={`https://suiscan.xyz/${process.env.NEXT_PUBLIC_SUI_NETWORK || 'devnet'}/tx/${payment.sui_transaction_digest}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:text-blue-800 font-mono break-all underline"
+                            className="inline-flex items-center text-xs text-purple-600 hover:text-purple-700 font-medium"
                           >
-                            {payment.sui_transaction_hash}
+                            <span>View on Sui Explorer</span>
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
                           </a>
                         </div>
                       </div>

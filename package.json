@@ -10,6 +10,7 @@
     "sui:deploy": "cd sui && sui move build && sui client publish --gas-budget 100000000"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@mysten/sui.js": "^0.54.1",
     "@scure/base": "^2.0.0",
     "@scure/bip39": "^2.0.1",
@@ -28,6 +29,7 @@
     "react": "^18.3.0",
     "react-calendar": "^4.8.0",
     "react-dom": "^18.3.0",
+    "react-hot-toast": "^2.6.0",
     "stripe": "^14.10.0",
     "twilio": "^4.20.0",
     "twilio-video": "^2.33.0",

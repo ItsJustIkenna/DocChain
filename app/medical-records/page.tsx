@@ -14,6 +14,8 @@ interface MedicalRecord {
   description: string;
   created_at: string;
   status: string;
+  appointment_id?: string | null;
+  sui_transaction_hash?: string | null;
   doctor: {
     id: string;
     full_name: string;
@@ -256,21 +258,74 @@ export default function MedicalRecordsPage() {
                     {/* Expanded View */}
                     {selectedRecord?.id === record.id && (
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
                           <h4 className="text-sm font-semibold text-gray-900 mb-2">Consultation Notes</h4>
                           <p className="text-sm text-gray-700 whitespace-pre-wrap">{record.description}</p>
                         </div>
 
-                        {/* Blockchain Info */}
-                        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                          <div className="flex items-center gap-2 text-xs text-blue-800">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
-                            <span className="font-medium">Secured on Blockchain</span>
-                            <span className="text-gray-600">• Tamper-proof • Encrypted</span>
+                        {/* Blockchain Transaction Link */}
+                        {record.sui_transaction_hash ? (
+                          <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                            <div className="flex items-start gap-2">
+                              <svg className="w-5 h-5 text-purple-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h5 className="text-sm font-semibold text-gray-900">Blockchain Verified</h5>
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                    Immutable
+                                  </span>
+                                </div>
+                                <p className="text-xs text-gray-600 mb-2">
+                                  This medical record has been permanently secured on the Sui blockchain
+                                </p>
+                                <div className="bg-white rounded-md p-2 mb-2">
+                                  <p className="text-xs text-gray-500 mb-1">Transaction Hash:</p>
+                                  <code className="text-xs text-purple-600 break-all font-mono">
+                                    {record.sui_transaction_hash}
+                                  </code>
+                                </div>
+                                <a
+                                  href={`https://suiscan.xyz/${process.env.NEXT_PUBLIC_SUI_NETWORK || 'devnet'}/tx/${record.sui_transaction_hash}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center text-xs text-purple-600 hover:text-purple-700 font-medium"
+                                >
+                                  <span>View on Sui Explorer</span>
+                                  <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                              </div>
+                            </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="flex items-center gap-2 text-xs text-blue-800">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                              </svg>
+                              <span className="font-medium">Secured & Encrypted</span>
+                              <span className="text-gray-600">• Tamper-proof • HIPAA Compliant</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Link to Appointment */}
+                        {record.appointment_id && (
+                          <div className="mt-3">
+                            <Link
+                              href={`/appointments/${record.appointment_id}`}
+                              className="text-xs text-blue-600 hover:text-blue-700 font-medium inline-flex items-center"
+                            >
+                              <span>View Related Appointment</span>
+                              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

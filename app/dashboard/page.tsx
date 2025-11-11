@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import BackButton from '@/components/BackButton';
 import AccountDropdown from '@/components/AccountDropdown';
+import RescheduleModal from '@/components/RescheduleModal';
 
 interface Appointment {
   id: string;
@@ -14,6 +15,7 @@ interface Appointment {
   price_usd: number;
   twilio_room_sid: string | null;
   notes?: string | null;
+  sui_transaction_digest?: string | null;
   doctor: {
     id: string;
     title_prefix: string | null;
@@ -30,6 +32,18 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past' | 'cancelled'>('all');
   const [patientWalletAddress, setPatientWalletAddress] = useState<string | null>(null);
+  const [rescheduleModal, setRescheduleModal] = useState<{
+    isOpen: boolean;
+    appointment: {
+      id: string;
+      appointment_date: string;
+      doctor_name: string;
+      appointment_type?: string;
+    } | null;
+  }>({
+    isOpen: false,
+    appointment: null,
+  });
 
   // Use regular function declarations instead of arrow functions
   async function fetchPatientWallet() {
@@ -400,12 +414,28 @@ export default function DashboardPage() {
                           </button>
 
                           {isUpcoming && appointment.status !== 'cancelled' && (
-                            <button
-                              onClick={() => cancelAppointment(appointment.id)}
-                              className="bg-white text-red-600 py-2 px-6 rounded-lg font-semibold border-2 border-red-600 hover:bg-red-50 transition-all duration-200"
-                            >
-                              Cancel
-                            </button>
+                            <>
+                              <button
+                                onClick={() => setRescheduleModal({
+                                  isOpen: true,
+                                  appointment: {
+                                    id: appointment.id,
+                                    appointment_date: appointment.appointment_time,
+                                    doctor_name: appointment.doctor.full_name,
+                                    appointment_type: 'Consultation',
+                                  },
+                                })}
+                                className="bg-white text-purple-600 py-2 px-6 rounded-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition-all duration-200"
+                              >
+                                Reschedule
+                              </button>
+                              <button
+                                onClick={() => cancelAppointment(appointment.id)}
+                                className="bg-white text-red-600 py-2 px-6 rounded-lg font-semibold border-2 border-red-600 hover:bg-red-50 transition-all duration-200"
+                              >
+                                Cancel
+                              </button>
+                            </>
                           )}
                         </div>
                       </div>
@@ -424,6 +454,45 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       )}
+
+                      {/* Blockchain Transaction Link */}
+                      {appointment.sui_transaction_digest && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <div className="flex items-start gap-2">
+                            <svg className="w-5 h-5 text-purple-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <div className="flex-1">
+                              <h4 className="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                                <span>Blockchain Verified</span>
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                  Immutable
+                                </span>
+                              </h4>
+                              <p className="text-xs text-gray-600 mb-2">
+                                This appointment has been permanently recorded on the Sui blockchain
+                              </p>
+                              <div className="bg-gray-50 rounded-md p-2 mb-2">
+                                <p className="text-xs text-gray-500 mb-1">Transaction Hash:</p>
+                                <code className="text-xs text-purple-600 break-all font-mono">
+                                  {appointment.sui_transaction_digest}
+                                </code>
+                              </div>
+                              <a
+                                href={`https://suiscan.xyz/${process.env.NEXT_PUBLIC_SUI_NETWORK || 'devnet'}/tx/${appointment.sui_transaction_digest}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center text-sm text-purple-600 hover:text-purple-700 font-medium"
+                              >
+                                <span>View on Sui Explorer</span>
+                                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -431,6 +500,19 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
+
+        {/* Reschedule Modal */}
+        {rescheduleModal.appointment && (
+          <RescheduleModal
+            isOpen={rescheduleModal.isOpen}
+            onClose={() => setRescheduleModal({ isOpen: false, appointment: null })}
+            appointment={rescheduleModal.appointment}
+            onSuccess={() => {
+              fetchAppointments();
+              setRescheduleModal({ isOpen: false, appointment: null });
+            }}
+          />
+        )}
       </div>
     </div>
   );
