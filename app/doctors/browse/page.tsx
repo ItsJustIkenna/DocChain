@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import BackButton from '@/components/BackButton';
 import AccountDropdown from '@/components/AccountDropdown';
+import StarRating from '@/components/StarRating';
 
 interface Doctor {
   id: string;
@@ -15,6 +16,8 @@ interface Doctor {
   bio: string | null;
   years_experience: number | null;
   photo_url: string | null;
+  average_rating?: number;
+  total_reviews?: number;
 }
 
 export default function BrowseDoctorsPage() {
@@ -190,6 +193,20 @@ export default function BrowseDoctorsPage() {
                       <p className="text-sm text-blue-600 font-medium">{doctor.specialty}</p>
                     </div>
                   </div>
+
+                  {/* Rating */}
+                  {doctor.average_rating && doctor.average_rating > 0 && (
+                    <div className="mb-3">
+                      <StarRating 
+                        rating={doctor.average_rating} 
+                        size="sm"
+                        showNumber={true}
+                      />
+                      <span className="ml-2 text-sm text-gray-500">
+                        ({doctor.total_reviews} review{doctor.total_reviews !== 1 ? 's' : ''})
+                      </span>
+                    </div>
+                  )}
 
                   {/* Experience */}
                   {doctor.years_experience && (
