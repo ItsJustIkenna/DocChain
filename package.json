@@ -1,0 +1,47 @@
+{
+  "name": "docchain",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0 -p 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "sui:deploy": "cd sui && sui move build && sui client publish --gas-budget 100000000"
+  },
+  "dependencies": {
+    "@mysten/sui.js": "^0.54.1",
+    "@scure/base": "^2.0.0",
+    "@scure/bip39": "^2.0.1",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "@stripe/stripe-js": "^2.4.0",
+    "@supabase/auth-helpers-nextjs": "^0.8.7",
+    "@supabase/supabase-js": "^2.39.0",
+    "@types/twilio-video": "^2.7.3",
+    "@upstash/ratelimit": "^2.0.7",
+    "@upstash/redis": "^1.35.6",
+    "axios": "^1.6.0",
+    "date-fns": "^3.0.0",
+    "jose": "^6.1.1",
+    "lucide-react": "^0.344.0",
+    "next": "^14.2.33",
+    "react": "^18.3.0",
+    "react-calendar": "^4.8.0",
+    "react-dom": "^18.3.0",
+    "stripe": "^14.10.0",
+    "twilio": "^4.20.0",
+    "twilio-video": "^2.33.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.2.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.0"
+  }
+}

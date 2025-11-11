@@ -1,0 +1,81 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Lock files (optional - remove this section if you want to commit lock files)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Next.js
+.next/
+out/
+build/
+dist/
+.vercel
+
+# Production
+*.log
+*.tsbuildinfo
+.cache/
+
+# Environment
+.env
+.env*.local
+.env.production
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Sui
+sui/build/
+sui/.sui/
+sui/Move.lock
+sui_contracts/build/
+sui_contracts/.sui/
+sui_contracts/Move.lock
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~.nib
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+
+# Misc
+.turbo/
+*.pid
+*.seed
+*.pid.lock
